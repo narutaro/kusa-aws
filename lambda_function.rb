@@ -1,6 +1,8 @@
 require 'json'
 require 'aws-sdk-dynamodb'
 
+# TODO
+
 def add_project(table, event)
   table.put_item({ item: JSON.parse(event['body']) })  
 end
