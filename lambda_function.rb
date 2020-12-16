@@ -1,14 +1,12 @@
 require 'json'
 require 'aws-sdk-dynamodb'
 
-def add_project(table, event)
-  event_body = JSON.parse(event['body'])
-  table.put_item({ item: event_body })  
+def add_project(table, body)
+  table.put_item({ item: body })  
 end
 
-def delete_project(table, event)
-  event_body = JSON.parse(event['body'])
-  params = { table_name: table, key: { 'project-id': event_body['project-id'] } }
+def delete_project(table, body)
+  params = { table_name: table, key: { 'project-id': body['project-id'] } }
   begin
     table.delete_item(params)
   rescue Aws::DynamoDB::Errors::ServiceError => error
@@ -16,7 +14,7 @@ def delete_project(table, event)
   end
 end
 
-def update_project(table, event)
+def update_project(table, body)
   params = {
     table_name: table,
     key: { 'project-id': event['project-id'] },
@@ -44,6 +42,7 @@ end
 def lambda_handler(event:, context:)
   
   http_method = event['httpMethod']
+  body = JSON.parse(event['body'])
   
   dynamodb = Aws::DynamoDB::Resource.new(region: 'us-east-2')
   table = dynamodb.table('project')
@@ -58,9 +57,9 @@ def lambda_handler(event:, context:)
   
   case http_method
     when 'GET'    then list_project(table)
-    when 'PUT'    then update_project(table, event)
-    when 'POST'   then add_project(table, event)
-    when 'DELETE' then delete_project(table, event)
+    when 'PUT'    then update_project(table, body)
+    when 'POST'   then add_project(table, body)
+    when 'DELETE' then delete_project(table, body)
     else 0
   end
 
