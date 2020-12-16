@@ -1,14 +1,14 @@
 require 'json'
 require 'aws-sdk-dynamodb'
 
-# TODO
-
 def add_project(table, event)
-  table.put_item({ item: JSON.parse(event['body']) })  
+  event_body = JSON.parse(event['body'])
+  table.put_item({ item: event_body })  
 end
 
 def delete_project(table, event)
-  params = { table_name: table, key: { 'project-id': event['project-id'] } }
+  event_body = JSON.parse(event['body'])
+  params = { table_name: table, key: { 'project-id': event_body['project-id'] } }
   begin
     table.delete_item(params)
   rescue Aws::DynamoDB::Errors::ServiceError => error
@@ -52,7 +52,9 @@ def lambda_handler(event:, context:)
   #puts event
   #p event.project-id
   #p event['project-id']
-  puts http_method
+  puts "http_method: #{http_method}"
+  puts "event_body: #{event['body']}"
+  puts "event_body_project_id: #{event['body']['project-id']}"
   
   case http_method
     when 'GET'    then list_project(table)
