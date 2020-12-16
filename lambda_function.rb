@@ -17,10 +17,10 @@ end
 def update_project(table, body)
   params = {
     table_name: table,
-    key: { 'project-id': event['project-id'] },
+    key: { 'project-id': body['project-id'] },
     attribute_updates: {
-      put: {
-        value: { name: event['name'] },
+      name: {
+        value: body['name'],
         action: "PUT"
       }
     }
