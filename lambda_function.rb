@@ -47,14 +47,6 @@ def lambda_handler(event:, context:)
   dynamodb = Aws::DynamoDB::Resource.new(region: 'us-east-2')
   table = dynamodb.table('project')
   
-  #puts context.inspect
-  #puts event
-  #p event.project-id
-  #p event['project-id']
-  puts "http_method: #{http_method}"
-  puts "event_body: #{event['body']}"
-  puts "event_body_project_id: #{event['body']['project-id']}"
-  
   case http_method
     when 'GET'    then list_project(table)
     when 'PUT'    then update_project(table, body)
@@ -63,11 +55,6 @@ def lambda_handler(event:, context:)
     else 0
   end
 
-  puts JSON.generate(event)
-  #p list_project(table).class
-  
-  #{ statusCode: 200, body: list_project(table) }
-  #{ statusCode: 200, body: JSON.generate(event) }
   { statusCode: 200, body: JSON.generate(list_project(table)) }
 
 end
