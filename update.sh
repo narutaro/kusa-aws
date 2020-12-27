@@ -1,10 +1,12 @@
 #!/bin/bash
 
-if [ $# -lt 2 ]; then
-  echo "Usage: $0 lambda_project_name code_file"
+PROJECT_NAME=project
+
+if [ $# -lt 1 ]; then
+  echo "Usage: $0 code_file"
 else
-  zip lambda_function.zip $2 &&
-  aws lambda update-function-code --function-name $1 --zip-file fileb://lambda_function.zip
+  zip lambda_function.zip $1 &&
+  aws lambda update-function-code --function-name $PROJECT_NAME --zip-file fileb://lambda_function.zip
 fi
 
 

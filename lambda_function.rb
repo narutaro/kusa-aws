@@ -42,7 +42,7 @@ end
 def lambda_handler(event:, context:)
   
   http_method = event['httpMethod']
-  body = JSON.parse(event['body'])
+  body = JSON.parse(event['body']) unless http_method == "GET"
   
   dynamodb = Aws::DynamoDB::Resource.new(region: 'us-east-2')
   table = dynamodb.table('project')
