@@ -41,6 +41,10 @@ end
 
 def lambda_handler(event:, context:)
   
+  puts event['pathParameters']
+  puts context.inspect
+
+
   http_method = event['httpMethod']
   body = JSON.parse(event['body']) unless http_method == "GET"
   
@@ -55,6 +59,14 @@ def lambda_handler(event:, context:)
     else 0
   end
 
-  { statusCode: 200, body: JSON.generate(list_project(table)) }
+  { 
+    statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Origin": '*',
+      "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+    },
+    body: JSON.generate(list_project(table))
+  }
 
 end
